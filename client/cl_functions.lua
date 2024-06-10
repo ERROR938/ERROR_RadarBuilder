@@ -21,3 +21,16 @@ function RaycastFromPoint(point, rotation, distance)
     
     return hit, endCoords, surfaceNormal, entityHit
 end
+
+function CreateBlip(name, x, y, z, color, id)
+    local blip = AddBlipForCoord(x, y, z)
+    SetBlipSprite (blip, id)
+    SetBlipScale  (blip, 1.0)
+    SetBlipDisplay(blip, 4)
+    SetBlipColour (blip, color)
+    SetBlipAsShortRange(blip, true)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString(name)
+    EndTextCommandSetBlipName(blip)
+    return blip
+end

@@ -35,3 +35,7 @@ RegisterNetEvent("ERROR_RadarBuilder:EditRadarData", function(id, key, val)
     end
     TriggerClientEvent("ERROR_RadarBuilder:UpdateRadars", -1, radars)
 end)
+
+ESX.RegisterUsableItem("coyote", function(source)
+    TriggerClientEvent("ERROR_RadarBuilder:Displaycoyote", source)
+end)

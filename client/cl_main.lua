@@ -1,5 +1,7 @@
 local radars = {}
 local c_radar = 0
+local toggle_coyote = false
+local coyote_blips = {}
 
 local function InitAllProps(r)
     for k,v in pairs(r) do
@@ -206,4 +208,23 @@ CreateThread(function()
     end) () do
         Wait(msec)
     end
+end)
+
+RegisterNetEvent("ERROR_RadarBuilder:Displaycoyote", function()
+    if (not toggle_coyote) then
+        local pos
+        for _,v in pairs(radars) do
+            pos = v.position
+            coyote_blips[#coyote_blips+1] = CreateBlip("Radar", pos.x, pos.y, pos.z, 1, 380)
+        end
+        ESX.ShowNotification("Les radars sont desormais sur la carte !")
+    else
+        for _,v in pairs(coyote_blips) do
+            if (DoesBlipExist(v)) then
+                RemoveBlip(v)
+            end
+        end
+        ESX.ShowNotification("Les radars ne sont desormais plus sur la carte !")
+    end
+    toggle_coyote = not toggle_coyote
 end)

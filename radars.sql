@@ -5,3 +5,5 @@ CREATE TABLE `radars` (
     `name` VARCHAR(200) NOT NULL, 
     PRIMARY KEY (`id`)
 )ENGINE=InnoDB;
+
+INSERT INTO `items`(`name`, `label`) VALUES ('coyote','Coyote');
