@@ -18,3 +18,9 @@ shared_scripts {
     '@ox_lib/init.lua',
     "config.lua"
 }
+
+dependency {
+    "ox_lib",
+    "es_extended",
+    "oxmysql"
+}

@@ -13,3 +13,7 @@
 ```
 
 ### Dans le cas contraire, ajoutez l'item du fichier `radars.sql` dans la base de données.
+
+# Dependences
+
+### Pour installer le script, il faut : `ox_lib`, `oxmysql`, `es_extended`
