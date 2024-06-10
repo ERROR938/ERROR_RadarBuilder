@@ -1,9 +1,9 @@
 local radars = {}
+local c_radar = 0
 
 local function InitAllProps(r)
     for k,v in pairs(r) do
         ESX.Game.SpawnObject("prop_cctv_pole_01a", vec3(v.position.x, v.position.y, v.position.z-7), function(ent)
-            print(ent)
             radars[k].ent = ent
         end)
     end
@@ -22,7 +22,70 @@ RegisterNetEvent("esx:setJob", function(job)
     ESX.PLayerData.job = job
 end)
 
+
+local function EditRadarData()
+    c_radar = radars[c_radar]
+    return {
+        {
+            title = _U('r_namee', c_radar.name),
+            onSelect = function()
+                local input = lib.inputDialog('', {
+                    {type = 'input', label = _U('r_name'), placeholder = '' },
+                })
+                if (not input or not input[1]) then return true end
+                TriggerServerEvent("ERROR_RadarBuilder:EditRadarData", c_radar.id, 'name', input[1])
+            end
+        },
+        {
+            title = _U('r_mph', c_radar.mph),
+            onSelect = function()
+                local input = lib.inputDialog('', {
+                    {type = 'number', label = _U('max_vit'), placeholder = ''},
+                })
+                if (not input or not input[1]) then return true end
+                TriggerServerEvent("ERROR_RadarBuilder:EditRadarData", c_radar.id, 'mph', input[1])
+            end
+        },
+        {
+            title = _U('dist_f', c_radar.view),
+            onSelect = function()
+                local input = lib.inputDialog('', {
+                    {type = 'number', label = _U('flash_dst'), placeholder = ''},
+                })
+                if (not input or not input[1]) then return true end
+                TriggerServerEvent("ERROR_RadarBuilder:EditRadarData", c_radar.id, 'view', input[1])
+            end
+        },
+        {
+            title = _U('delete_r'),
+            onSelect = function()
+                local input = lib.inputDialog('', {
+                    {type = 'checkbox', label = 'êtes vous sur ?', placeholder = '' },
+                })
+                if (not input or not input[1]) then return true end
+                TriggerServerEvent("ERROR_RadarBuilder:EditRadarData", c_radar.id, 'delete')
+            end
+        },
+    }
+end
+
+local function GetAllRadars()
+    local _ = {}
+    for k,v in pairs(radars) do
+        _[#_+1] = {
+            title = v.name,
+            onSelect = function(args)
+                c_radar = v.id  
+                lib.registerContext({id = 'c_radar', title = v.name, options = EditRadarData()})
+                lib.showContext("c_radar")     
+            end
+        }
+    end
+    return _
+end
+
 local function IsPlayerAllowed()
+    ESX.PLayerData = ESX.GetPlayerData()
     if (not ESX.PlayerData.job) then return false end
     for k,v in pairs(Config.Jobs) do
         if (ESX.PLayerData.job.name == v) then return true end
@@ -72,10 +135,21 @@ lib.registerContext({
                 radar = {}
             end
         },
+        {
+            title = _U('gestion_r'),
+            description = '',
+            onSelect = function(args)
+                lib.registerContext({id = 'gr', title = 'Liste des radars', options = GetAllRadars()})
+                lib.showContext('gr')
+            end
+        },
     },
 })
 
 RegisterCommand(Config.CommandName, function(_, args)
+    if (not IsPlayerAllowed()) then
+        return ESX.ShowNotification(_U('acces_denied'), "error")
+    end
     lib.showContext("radar_menu")
 end)
 
@@ -116,8 +190,10 @@ CreateThread(function()
                 local vit = GetEntitySpeed(entityHit) * 3.6
                 if ((vit > radars[r_id].mph) and not (entityHit == las_veh)) then
                     local driver = GetPedInVehicleSeat(entityHit, -1)
-                    if (IsPedAPlayer(driver)) then
-                        ESX.ShowNotification(("📸 : Vous avez été flashé à %s km/h au lieu de %s km/h."):format(math.floor(vit), radars[r_id].mph))
+                    if (IsPedAPlayer(driver) and not IsPlayerAllowed()) then
+                        vit = math.floor(vit)
+                        ESX.ShowNotification(_U('flash_msg', vit, radars[r_id].mph))
+                        TriggerServerEvent("esx_billing:sendBill", GetPlayerServerId(PlayerId()), Config.BillSociety, _U('bill', vit), (vit-radars[r_id].mph)*Config.PriceForKm)
                     end
                     las_veh = entityHit
                     SetTimeout(5000, function()

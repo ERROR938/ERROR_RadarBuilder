@@ -23,3 +23,15 @@ end)
 ESX.RegisterServerCallback("ERROR_RadarBuilder:GetRadars", function(source, cb) 
     cb(radars)
 end)
+
+RegisterNetEvent("ERROR_RadarBuilder:EditRadarData", function(id, key, val)
+    if (key ~= "delete") then
+        local req = ("UPDATE radars SET `%s` = ? WHERE id = ?"):format(key)
+        MySQL.query(req, {val, id})
+        radars[id][key] = val
+    else
+        MySQL.query("DELETE FROM radars WHERE `id` = ?", {id})
+        radars[id] = nil
+    end
+    TriggerClientEvent("ERROR_RadarBuilder:UpdateRadars", -1, radars)
+end)
