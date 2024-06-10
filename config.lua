@@ -1,5 +1,5 @@
 Config = {}
-Config.Debug = true
+Config.Debug = false
 Config.LoadZone = 40 -- don't touch this
 Config.PriceForKm = 300
 Config.Locale = "fr"
