@@ -4,5 +4,6 @@ Locales['fr'] = {
     ['creation_aborded'] = "Une erreur est survenue",
     ['r_name'] = "Nom du radar", 
     ['rph'] = "Radar Mission Row", 
-    ['max_vit'] = "Vitesse Max"
+    ['max_vit'] = "Vitesse Max",
+    ['flash_dst'] = "Ditance de flash",
 }
