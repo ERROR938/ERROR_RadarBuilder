@@ -39,3 +39,29 @@ end)
 ESX.RegisterUsableItem("coyote", function(source)
     TriggerClientEvent("ERROR_RadarBuilder:Displaycoyote", source)
 end)
+
+RegisterNetEvent('ERROR_RadarBuilder:sendBill', function(playerId, sharedAccountName, label, amount)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local xTarget = ESX.GetPlayerFromId(playerId)
+	amount = ESX.Math.Round(amount)
+
+	if amount > 0 and xTarget then
+		if string.match(sharedAccountName, "society_") then
+			TriggerEvent('esx_addonaccount:getSharedAccount', sharedAccountName, function(account)
+				if account then
+					MySQL.insert('INSERT INTO billing (identifier, sender, target_type, target, label, amount) VALUES (?, ?, ?, ?, ?, ?)', {xTarget.identifier, xPlayer.identifier, 'society', sharedAccountName, label, amount},
+					function(rowsChanged)
+						xTarget.showNotification(TranslateCap('received_invoice'))
+					end)
+				else
+					print(("[^2ERROR^7] Player ^5%s^7 Attempted to Send bill from invalid society - ^5%s^7"):format(xPlayer.source, sharedAccountName))
+				end
+			end)
+		else
+			MySQL.insert('INSERT INTO billing (identifier, sender, target_type, target, label, amount) VALUES (?, ?, ?, ?, ?, ?)', {xTarget.identifier, xPlayer.identifier, 'player', xPlayer.identifier, label, amount},
+			function(rowsChanged)
+				xTarget.showNotification(TranslateCap('received_invoice'))
+			end)
+		end
+	end
+end)

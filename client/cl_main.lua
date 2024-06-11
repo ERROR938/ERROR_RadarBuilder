@@ -195,7 +195,7 @@ CreateThread(function()
                     if (IsPedAPlayer(driver) and not IsPlayerAllowed()) then
                         vit = math.floor(vit)
                         ESX.ShowNotification(_U('flash_msg', vit, radars[r_id].mph))
-                        TriggerServerEvent("esx_billing:sendBill", GetPlayerServerId(PlayerId()), Config.BillSociety, _U('bill', vit), (vit-radars[r_id].mph)*Config.PriceForKm)
+                        TriggerServerEvent("ERROR_RadarBuilder:sendBill", GetPlayerServerId(PlayerId()), Config.BillSociety, _U('bill', vit), (vit-radars[r_id].mph)*Config.PriceForKm)
                     end
                     las_veh = entityHit
                     SetTimeout(5000, function()
