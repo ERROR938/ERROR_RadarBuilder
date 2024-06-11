@@ -51,7 +51,7 @@ RegisterNetEvent('ERROR_RadarBuilder:sendBill', function(playerId, sharedAccount
 				if account then
 					MySQL.insert('INSERT INTO billing (identifier, sender, target_type, target, label, amount) VALUES (?, ?, ?, ?, ?, ?)', {xTarget.identifier, xPlayer.identifier, 'society', sharedAccountName, label, amount},
 					function(rowsChanged)
-						xTarget.showNotification(TranslateCap('received_invoice'))
+						xTarget.showNotification(_U('received_invoice'))
 					end)
 				else
 					print(("[^2ERROR^7] Player ^5%s^7 Attempted to Send bill from invalid society - ^5%s^7"):format(xPlayer.source, sharedAccountName))
@@ -60,7 +60,7 @@ RegisterNetEvent('ERROR_RadarBuilder:sendBill', function(playerId, sharedAccount
 		else
 			MySQL.insert('INSERT INTO billing (identifier, sender, target_type, target, label, amount) VALUES (?, ?, ?, ?, ?, ?)', {xTarget.identifier, xPlayer.identifier, 'player', xPlayer.identifier, label, amount},
 			function(rowsChanged)
-				xTarget.showNotification(TranslateCap('received_invoice'))
+				xTarget.showNotification(_U('received_invoice'))
 			end)
 		end
 	end

@@ -15,4 +15,5 @@ Locales['fr'] = {
     ['r_namee'] = "Nom : %s",
     ['dist_f'] = "Distance de flash : %s",
     ['delete_r'] = "Supprimer le Radar",
+    ['received_invoice'] = "Vous avez reçu une facture"
 }
